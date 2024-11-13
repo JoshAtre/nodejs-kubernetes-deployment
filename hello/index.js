@@ -1,7 +1,16 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const app = express();
+const pino = require('pino');
+const axios = require('axios');
+const config = require('config')
 
+const app = express();
+const logger = pino({
+  level: 'debug'
+});
+
+const backendHostname = config.get("backend.host")
+const backendPort = config.get("backend.port")
 const httpPort = 8080;
 const healthPort = 8181;
 const version = "1.0.0";
@@ -24,15 +33,18 @@ app.get('/readiness/status', (req, res) => {
 });
 
 // --- JWT Authentication Middleware --- 
-const jwtSecret = process.env.JWT_SECRET;
+const jwtSecret = 'your-secret-key';
 const authenticateJWT = (req, res, next) => {
   const authHeader = req.headers.authorization;
+  logger.debug(`Received auth header: ${authHeader}`)
 
   if (authHeader) {
     const token = authHeader.split(' ')[1];
+    logger.debug(`Token: ${token}`)
 
     jwt.verify(token, jwtSecret, (err, user) => {
       if (err) {
+        logger.debug(`JWT validation failed: ${err}`)
         return res.sendStatus(403);
       }
 
@@ -50,7 +62,30 @@ app.get('/', (req, res) => {
 });
 
 app.get('/secure', authenticateJWT, (req, res) => {
-  res.send('Hello, secure world!\n');
+  const authHeader = req.headers.authorization;
+  axios.get(`http://${backendHostname}:${backendPort}/mybackendapi`, { 'headers': { 'Authorization': authHeader} })
+  .then((response) => {
+    res.send(response.data)
+  })
+  .catch((error) => {
+    console.log(error.code)
+    console.error(error);
+    if (error.code && (error.code == "ECONNREFUSED" || error.code == "ENOTFOUND")) {
+      res.sendStatus(503)
+    }
+    if (error.response) {
+      statusCode = error.response.status
+      console.log(`Status code = ${statusCode}`)
+      switch (statusCode) {
+        case 401:
+        case 403:
+          res.send(statusCode)
+          break
+        default:
+          res.send(statusCode)
+      }
+    }
+  });
 });
 
 app.get('/version', (req, res) => {
@@ -59,25 +94,23 @@ app.get('/version', (req, res) => {
 
 // --- Start Servers ---
 const httpServer = app.listen(httpPort, () => {
-  console.log(`HTTP server listening on port ${httpPort}`);
+  logger.info(`HTTP server listening on port ${httpPort}`);
 });
 
 const healthServer = app.listen(healthPort, () => {
-  console.log(`Health server listening on port ${healthPort}`);
+  logger.info(`Health server listening on port ${healthPort}`);
 });
 
 // --- Graceful Shutdown ---
 process.on('SIGINT', () => {
-  console.log('SIGINT signal received. Shutting down...');
+  logger.info('SIGINT signal received. Shutting down...');
 
   httpServer.close(() => {
-    console.log('HTTP server closed.');
+    logger.info('HTTP server closed.');
   });
 
   healthServer.close(() => {
-    console.log('Health server closed.');
+    logger.info('Health server closed.');
     process.exit(0); 
   });
 });
-
-

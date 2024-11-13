@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth
+spec:
+  replicas: 2 # Number of pods to create
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+      - name: auth
+        image: us-west2-docker.pkg.dev/service-project-dev-1a/my-repository/auth:latest
+        ports:
+        - containerPort: 3000
