@@ -46,6 +46,11 @@ app.post('/login', (req, res) => {
   });
 });
 
+// Add this route handler for the health check
+app.get('/', (req, res) => {
+    res.status(200).send('OK'); // Or simply res.sendStatus(200);
+  });
+
 app.listen(3000, () => {
   console.log('Server listening on port 3000');
 });
