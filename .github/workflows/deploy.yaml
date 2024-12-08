@@ -8,7 +8,7 @@ on:
 env:
   PROJECT_ID: service-project-dev-1a
   GAR_LOCATION: us-west2
-  REPOSITORY: simple-node-server
+  DOCKER_REPO: my-repository
 
 jobs:
   build-and-deploy:
@@ -44,7 +44,13 @@ jobs:
       - name: 'Docker auth'
         run: |
           gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
-          gcloud artifacts docker images list us-west2-docker.pkg.dev/service-project-dev-1a/my-repository
+      #    gcloud artifacts docker images list us-west2-docker.pkg.dev/service-project-dev-1a/my-repository
+
+      # Step 4: Build and push hello image
+      - name: 'Build and push Docker image for hello service'
+        run: |
+          docker build -t "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.DOCKER_REPO }}/hello:${{ github.sha }}" ./hello
+          docker push "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.DOCKER_REPO }}/hello:${{ github.sha }}"
       
       # Step 4: Set up Docker Buildx for multi-platform builds
       # - name: Set up Docker Buildx
