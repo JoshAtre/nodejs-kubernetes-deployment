@@ -42,8 +42,9 @@ jobs:
         run: 'gcloud info'
 
       - name: 'Docker auth'
-        run: |-
+        run: |
           gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
+          gcloud artifacts docker images list us-west2-docker.pkg.dev/service-project-dev-1a/my-repository
       
       # Step 4: Set up Docker Buildx for multi-platform builds
       # - name: Set up Docker Buildx
