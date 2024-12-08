@@ -50,8 +50,10 @@ jobs:
       # Step 4: Build and push hello image
       - name: 'Build and push Docker image for hello service'
         run: |
-          docker build -t "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.DOCKER_REPO }}/hello:${{ github.sha }}" ./hello
-          docker push "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.DOCKER_REPO }}/hello:${{ github.sha }}"
+          docker build -t "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.DOCKER_REPO }}/hello" ./hello
+          docker push "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.DOCKER_REPO }}/hello"
+        # docker build -t "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.DOCKER_REPO }}/hello:${{ github.sha }}" ./hello
+        # docker push "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.DOCKER_REPO }}/hello:${{ github.sha }}"
 
       - name: 'Create release name for hello service'
         run: |-
@@ -64,8 +66,9 @@ jobs:
          name: '${{ env.RELEASE_NAME }}'
          region: '${{ env.REGION }}'
          description: '${{ env.GITHUB_COMMIT_MSG }}'
-      #   skaffold_file: 'config/skaffold.yaml'
-         images: 'app=${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.DOCKER_REPO }}/hello:${{ github.sha }}'
+         skaffold_file: 'skaffold.yaml'
+         images: 'app=${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.DOCKER_REPO }}/hello:LATEST'
+      #   images: 'app=${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.DOCKER_REPO }}/hello:${{ github.sha }}'
       
       # Step 4: Set up Docker Buildx for multi-platform builds
       # - name: Set up Docker Buildx
