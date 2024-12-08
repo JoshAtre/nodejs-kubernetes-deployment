@@ -65,7 +65,7 @@ app.get('/secure', authenticateJWT, (req, res) => {
   const authHeader = req.headers.authorization;
   axios.get(`http://${backendHostname}:${backendPort}/mybackendapi`, { 'headers': { 'Authorization': authHeader} })
   .then((response) => {
-    res.send(response.data)
+    res.send(response.data + " :1")
   })
   .catch((error) => {
     console.log(error.code)
