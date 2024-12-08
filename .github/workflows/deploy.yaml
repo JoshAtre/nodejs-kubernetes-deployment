@@ -26,7 +26,7 @@ jobs:
       # Step 2: Authenticate to Google Cloud using Workload Identity Federation
       - name: 'Google auth'
         id: 'auth'
-        uses: 'google-github-actions/auth@v2'
+        uses: 'google-github-actions/auth@v1'
         with:
           workload_identity_provider: 'projects/89346032191/locations/global/workloadIdentityPools/github-actions-cloud-run/providers/github'
           service_account: 'github-cloud-deploy-sa@service-project-dev-1a.iam.gserviceaccount.com'
@@ -34,7 +34,7 @@ jobs:
 
       # Step 3: Set up Google Cloud SDK
       - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v2'
+        uses: 'google-github-actions/setup-gcloud@v1'
         with:
           project_id: '${{ env.PROJECT_ID }}'
       
