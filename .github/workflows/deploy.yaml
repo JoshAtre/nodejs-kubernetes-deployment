@@ -67,7 +67,7 @@ jobs:
          region: '${{ env.REGION }}'
          description: '${{ env.GITHUB_COMMIT_MSG }}'
          skaffold_file: 'config/skaffold.yaml'
-         images: 'app=${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.DOCKER_REPO }}/hello:LATEST'
+      #   images: 'app=${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.DOCKER_REPO }}/hello:LATEST'
       #   images: 'app=${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.DOCKER_REPO }}/hello:${{ github.sha }}'
       
       # Step 4: Set up Docker Buildx for multi-platform builds
