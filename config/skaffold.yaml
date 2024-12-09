@@ -2,8 +2,10 @@ apiVersion: skaffold/v4beta11
 kind: Config
 metadata:
   name: 'hello'
+profiles:
+  - name: target-1
 deploy:
   kubectl: {}
 manifests:
   rawYaml:
-  - hello/k8s/deployment.yaml
+  - ../hello/k8s/deployment.yaml

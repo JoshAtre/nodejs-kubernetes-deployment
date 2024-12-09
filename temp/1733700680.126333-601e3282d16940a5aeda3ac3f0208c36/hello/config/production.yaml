@@ -1,3 +1,0 @@
-backend:
-  host: backend.default.svc.cluster.local
-  port: 9000

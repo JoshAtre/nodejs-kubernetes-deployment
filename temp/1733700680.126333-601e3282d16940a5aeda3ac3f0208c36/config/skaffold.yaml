@@ -1,9 +1,0 @@
-apiVersion: skaffold/v4beta11
-kind: Config
-metadata:
-  name: 'hello'
-deploy:
-  kubectl: {}
-manifests:
-  rawYaml:
-  - hello/k8s/deployment.yaml
