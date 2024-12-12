@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: hello
-        image: us-west2-docker.pkg.dev/service-project-dev-1a/my-repository/hello:latest
+        image: my-app-image
         ports:
         - containerPort: 8080
